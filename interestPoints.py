@@ -56,8 +56,8 @@ def timeFits(timeA, timeB, intersectionTime):
   return fit
   
 
-def fits(placeDefinition, user):
-  return placeDefinition['prize'] <= user['amount'] and timeFits(placeDefinition['time'], user['time']) 
+def fits(user, placeDefinition):
+  return placeDefinition['prize'] <= user['amount'] and timeFits(user['time'], placeDefinition['time'], placeDefinition['average_visit_time']) 
 
 def time(hour, minuts=0):
   #return datetime.time(hour, minuts)
@@ -83,18 +83,24 @@ forum = {'prize':4, 'average_visit_time':timeLapse(4), 'location':25, 'time':[{'
 interestPoints = {'sagrada_familia':sagrada_familia, 'pedrera':pedrera, 'parc_guell':parc_guell, 'museo_picaso':museo_picaso, 'museo_ciencia':museo_ciencia, 'forum':forum}
 
 # Let's define a user
-Joan = {'amount':30, 'places_to_visit':3, 'time':[{'start':time(10), 'finish':time(16)}]}
+Joan = {'amount':30, 'places_to_visit':3, 'time':[{'start':time(13), 'finish':time(20)}]}
 
 # Our problem has well defined constraints, so lets generate a list with all places that fits with Joan
-fitList = [(interestPoint,fits(placeDefinition, Joan)) for interestPoint,placeDefinition in interestPoints.items() if fits(placeDefinition, Joan)]
+fitList = [(interestPoint,fits(Joan, placeDefinition)) for interestPoint,placeDefinition in interestPoints.items() if fits(Joan, placeDefinition)]
+#fitList = [(interestPoint) for interestPoint,placeDefinition in interestPoints.items() if fits(Joan, placeDefinition)]
 
 print fitList
 
+
+
 '''
 # Test timeFits(timeA, timeB, intersectionTime) function
-a = [{'start':time(13), 'finish':time(18)}]
-b = [{'start':time(10), 'finish':time(14)}, {'start':time(16),'finish':time(19)}]
-c = timeLapse(2)
+a = [{'start':time(13), 'finish':time(20)}]
+b = [{'start':time(10), 'finish':time(14)}, {'start':time(17),'finish':time(20)}]
+
+#a = [{'start':time(13), 'finish':time(18)}]
+#b = [{'start':time(10), 'finish':time(14)}, {'start':time(16),'finish':time(19)}]
+c = timeLapse(3)
 
 print a,'\n' 
 print b,'\n' 
