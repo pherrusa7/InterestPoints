@@ -57,17 +57,25 @@ def timeFits(timeA, timeB, intersectionTime):
   
 
 def fits(user, placeDefinition):
+  """return: start visit time, if (the amount of the user is greater than the prize of the place) and (there exist intersection in both times constrained by the average_visit_time)
+	     None, otherwise.
+  """
   return placeDefinition['prize'] <= user['amount'] and timeFits(user['time'], placeDefinition['time'], placeDefinition['average_visit_time']) 
 
 def time(hour, minuts=0):
-  #return datetime.time(hour, minuts)
+  """return datetime.time(hour, minuts), we don't care about year, month and day
+  """
   return datetime.datetime(1,1,1,hour,minuts)
 
 def timeLapse(hours, minuts=0):
+  """return datetime.timedelta. Observe that the definition must be in seconds
+  """
   return datetime.timedelta(0, hours*60*60+minuts*60)
 
+
+
 # Let's define some points of interest
-sagrada_familia = {'prize':10, 'average_visit_time':timeLapse(2), 'location':9, 'time':[{'start':time(10), 'finish':time(14)}, {'start':time(16),'finish':time(19)}]}
+sagrada_familia = {'prize':110, 'average_visit_time':timeLapse(2), 'location':9, 'time':[{'start':time(10), 'finish':time(14)}, {'start':time(16),'finish':time(19)}]}
 
 pedrera = {'prize':5, 'average_visit_time':timeLapse(2), 'location':3, 'time':[{'start':time(10), 'finish':time(14)}, {'start':time(15),'finish':time(19)}]}
 
@@ -86,10 +94,12 @@ interestPoints = {'sagrada_familia':sagrada_familia, 'pedrera':pedrera, 'parc_gu
 Joan = {'amount':30, 'places_to_visit':3, 'time':[{'start':time(13), 'finish':time(20)}]}
 
 # Our problem has well defined constraints, so lets generate a list with all places that fits with Joan
-fitList = [(interestPoint,fits(Joan, placeDefinition)) for interestPoint,placeDefinition in interestPoints.items() if fits(Joan, placeDefinition)]
-#fitList = [(interestPoint) for interestPoint,placeDefinition in interestPoints.items() if fits(Joan, placeDefinition)]
+fitList = [(interestPoint,fits(Joan, placeDefinition), Joan.copy()) for interestPoint,placeDefinition in interestPoints.items() if fits(Joan, placeDefinition)]
+sorted_fitList = sorted(fitList, key=lambda tup: tup[1])
+
 
 print fitList
+print sorted_fitList
 
 
 
